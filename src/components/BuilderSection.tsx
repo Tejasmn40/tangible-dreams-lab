@@ -22,8 +22,9 @@ const BuilderSection = () => {
   const [infill, setInfill] = useState(20);
   const [layerHeight, setLayerHeight] = useState(0.2);
   const [selectedColor, setSelectedColor] = useState(0);
+  const [wireframe, setWireframe] = useState(true);
 
-  const baseWeight = 45; // grams
+  const baseWeight = 45;
   const weight = baseWeight * (infill / 100 + 0.5);
   const qualityMultiplier = layerHeight <= 0.1 ? 1.5 : layerHeight <= 0.2 ? 1.0 : 0.8;
   const price = (weight * materials[material].pricePerG * qualityMultiplier + 5).toFixed(2);
@@ -44,37 +45,44 @@ const BuilderSection = () => {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          {/* 3D Viewer placeholder */}
-          <div className="glass-card flex min-h-[400px] flex-col items-center justify-center rounded-2xl p-8">
-            <div
-              className="mb-6 flex h-48 w-48 items-center justify-center rounded-2xl border-2 border-dashed border-primary/30 transition-colors hover:border-primary/60"
-              style={{ backgroundColor: colors[selectedColor].value + "15" }}
-            >
-              <div className="text-center">
-                <Upload className="mx-auto mb-3 h-10 w-10 text-primary animate-float" />
-                <p className="text-sm font-medium text-foreground">Drop STL / GLB / OBJ</p>
-                <p className="mt-1 text-xs text-muted-foreground">or click to browse</p>
-              </div>
+          {/* 3D Viewer */}
+          <div className="glass-card flex min-h-[500px] flex-col rounded-2xl overflow-hidden">
+            <div className="relative flex-1">
+              <ModelViewer3D color={colors[selectedColor].value} wireframe={wireframe} />
             </div>
 
-            {/* Color picker */}
-            <div className="flex items-center gap-3">
-              <Palette className="h-4 w-4 text-muted-foreground" />
-              {colors.map((c, i) => (
-                <button
-                  key={c.name}
-                  onClick={() => setSelectedColor(i)}
-                  className={`h-7 w-7 rounded-full border-2 transition-all ${
-                    i === selectedColor
-                      ? "scale-110 border-primary shadow-lg"
-                      : "border-transparent hover:scale-105"
-                  }`}
-                  style={{ backgroundColor: c.value }}
-                  title={c.name}
-                />
-              ))}
+            {/* Controls bar */}
+            <div className="flex items-center justify-between border-t border-border/30 px-5 py-3">
+              {/* Color picker */}
+              <div className="flex items-center gap-3">
+                <Palette className="h-4 w-4 text-muted-foreground" />
+                {colors.map((c, i) => (
+                  <button
+                    key={c.name}
+                    onClick={() => setSelectedColor(i)}
+                    className={`h-7 w-7 rounded-full border-2 transition-all ${
+                      i === selectedColor
+                        ? "scale-110 border-primary shadow-lg"
+                        : "border-transparent hover:scale-105"
+                    }`}
+                    style={{ backgroundColor: c.value }}
+                    title={c.name}
+                  />
+                ))}
+              </div>
+
+              {/* Wireframe toggle */}
+              <button
+                onClick={() => setWireframe(!wireframe)}
+                className={`rounded-lg px-4 py-1.5 font-heading text-xs font-semibold tracking-wider transition-all ${
+                  wireframe
+                    ? "bg-secondary text-secondary-foreground"
+                    : "border border-border text-muted-foreground hover:border-secondary"
+                }`}
+              >
+                WIREFRAME {wireframe ? "ON" : "OFF"}
+              </button>
             </div>
-            <span className="mt-2 text-xs text-muted-foreground">{colors[selectedColor].name}</span>
           </div>
 
           {/* Configuration panel */}
