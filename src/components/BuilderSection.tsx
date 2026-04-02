@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Upload, Palette, Layers, Settings, ArrowRight } from "lucide-react";
+import { Palette, Layers, Settings, ArrowRight } from "lucide-react";
+import ModelViewer3D from "./ModelViewer3D";
 
 const materials = [
   { name: "PLA", pricePerG: 0.04, desc: "Standard, biodegradable" },
